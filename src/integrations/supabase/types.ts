@@ -14,16 +14,220 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chefbox_settings: {
+        Row: {
+          admin_email: string
+          id: number
+          retirada: string
+          whatsapp: string
+        }
+        Insert: {
+          admin_email?: string
+          id?: number
+          retirada?: string
+          whatsapp?: string
+        }
+        Update: {
+          admin_email?: string
+          id?: number
+          retirada?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      cozinheiras: {
+        Row: {
+          ativo: boolean
+          capacidade: number
+          email: string
+          especialidade: string
+          id: string
+          nome: string
+          ponto_retirada: string
+          telefone: string
+          user_id: string | null
+        }
+        Insert: {
+          ativo?: boolean
+          capacidade?: number
+          email: string
+          especialidade: string
+          id?: string
+          nome: string
+          ponto_retirada: string
+          telefone: string
+          user_id?: string | null
+        }
+        Update: {
+          ativo?: boolean
+          capacidade?: number
+          email?: string
+          especialidade?: string
+          id?: string
+          nome?: string
+          ponto_retirada?: string
+          telefone?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      notificacoes_log: {
+        Row: {
+          assunto: string
+          conteudo: string
+          destinatario: string
+          enviado_em: string
+          id: string
+          pedido_id: string | null
+          status: string
+          tipo: string
+        }
+        Insert: {
+          assunto: string
+          conteudo: string
+          destinatario: string
+          enviado_em?: string
+          id?: string
+          pedido_id?: string | null
+          status?: string
+          tipo: string
+        }
+        Update: {
+          assunto?: string
+          conteudo?: string
+          destinatario?: string
+          enviado_em?: string
+          id?: string
+          pedido_id?: string | null
+          status?: string
+          tipo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notificacoes_log_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pedidos: {
+        Row: {
+          bairro: string
+          cliente_email: string
+          cliente_nome: string
+          cliente_telefone: string
+          cozinheira_id: string | null
+          created_at: string
+          endereco: string
+          id: string
+          linha: string
+          qtd_marmitas: number
+          restricoes: string[]
+          status: string
+          tipo_recebimento: string
+          user_id: string | null
+          valor_total: number
+        }
+        Insert: {
+          bairro?: string
+          cliente_email: string
+          cliente_nome: string
+          cliente_telefone: string
+          cozinheira_id?: string | null
+          created_at?: string
+          endereco?: string
+          id?: string
+          linha: string
+          qtd_marmitas: number
+          restricoes?: string[]
+          status?: string
+          tipo_recebimento: string
+          user_id?: string | null
+          valor_total: number
+        }
+        Update: {
+          bairro?: string
+          cliente_email?: string
+          cliente_nome?: string
+          cliente_telefone?: string
+          cozinheira_id?: string | null
+          created_at?: string
+          endereco?: string
+          id?: string
+          linha?: string
+          qtd_marmitas?: number
+          restricoes?: string[]
+          status?: string
+          tipo_recebimento?: string
+          user_id?: string | null
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_cozinheira_id_fkey"
+            columns: ["cozinheira_id"]
+            isOneToOne: false
+            referencedRelation: "cozinheiras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id: string
+          nome?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "cook" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +354,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "cook", "user"],
+    },
   },
 } as const
