@@ -1,8 +1,73 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import { supabase } from '@/integrations/supabase/client'
-import { Button } from '@/components/ui/button'
-import { Brand } from '@/components/chefbox/header'
-import { toast } from 'sonner'
-export const Route=createFileRoute('/reset-password')({head:()=>({meta:[{title:'Nova senha | ChefBox'},{name:'description',content:'Defina uma nova senha para sua conta ChefBox.'},{property:'og:title',content:'Nova senha | ChefBox'},{property:'og:description',content:'Recuperação segura de acesso à sua conta.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),component:Reset})
-function Reset(){const [password,setPassword]=useState(''),[recovery,setRecovery]=useState(false),[busy,setBusy]=useState(false);const navigate=useNavigate();useEffect(()=>{setRecovery(window.location.hash.includes('type=recovery'));const {data}=supabase.auth.onAuthStateChange(event=>{if(event==='PASSWORD_RECOVERY')setRecovery(true)});return()=>data.subscription.unsubscribe()},[]);return <main className="auth-page"><div className="auth-panel"><Brand/><h1>Uma nova senha.</h1>{recovery?<form onSubmit={async e=>{e.preventDefault();setBusy(true);const {error}=await supabase.auth.updateUser({password});setBusy(false);if(error){toast.error(error.message);return}toast.success('Senha atualizada.');await navigate({to:'/gestao'})}}><label className="field">Nova senha<input type="password" required minLength={8} value={password} onChange={e=>setPassword(e.target.value)}/></label><Button disabled={busy}>Salvar nova senha</Button></form>:<><p>Abra o link de recuperação enviado ao seu e-mail.</p><Button onClick={()=>navigate({to:'/auth'})}>Voltar ao acesso</Button></>}</div></main>}
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Brand } from "@/components/chefbox/header";
+import { toast } from "sonner";
+export const Route = createFileRoute("/reset-password")({
+  head: () => ({
+    meta: [
+      { title: "Nova senha | ChefBox" },
+      { name: "description", content: "Defina uma nova senha para sua conta ChefBox." },
+      { property: "og:title", content: "Nova senha | ChefBox" },
+      { property: "og:description", content: "Recuperação segura de acesso à sua conta." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
+  component: Reset,
+});
+function Reset() {
+  const [password, setPassword] = useState(""),
+    [recovery, setRecovery] = useState(false),
+    [busy, setBusy] = useState(false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    setRecovery(window.location.hash.includes("type=recovery"));
+    const { data } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") setRecovery(true);
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
+  return (
+    <main className="auth-page">
+      <div className="auth-panel">
+        <Brand />
+        <h1>Uma nova senha.</h1>
+        {recovery ? (
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              setBusy(true);
+              const { error } = await supabase.auth.updateUser({ password });
+              setBusy(false);
+              if (error) {
+                toast.error(error.message);
+                return;
+              }
+              toast.success("Senha atualizada.");
+              await navigate({ to: "/gestao" });
+            }}
+          >
+            <label className="field">
+              Nova senha
+              <input
+                type="password"
+                required
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </label>
+            <Button disabled={busy}>Salvar nova senha</Button>
+          </form>
+        ) : (
+          <>
+            <p>Abra o link de recuperação enviado ao seu e-mail.</p>
+            <Button onClick={() => navigate({ to: "/auth" })}>Voltar ao acesso</Button>
+          </>
+        )}
+      </div>
+    </main>
+  );
+}

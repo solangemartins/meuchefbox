@@ -1,6 +1,60 @@
-import { Link, useLocation } from '@tanstack/react-router'
-import { ChefHat, ArrowUpRight, Menu } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { useState } from 'react'
-export function Brand(){return <Link to="/" className="brand"><span className="brand-icon"><ChefHat size={25}/></span><span>Chef<span className="text-primary">Box</span><span className="brand-dot">.</span></span></Link>}
-export function Header(){const [open,setOpen]=useState(false);const path=useLocation().pathname;return <header className="site-header"><div className="container header-inner"><Brand/><nav className={open?'main-nav nav-open':'main-nav'}><Link to="/" hash="como-funciona">Como funciona</Link><Link to="/" hash="cardapio">Cardápio semanal</Link><Link to="/" hash="planos">Planos</Link><Link to="/" hash="duvidas">Dúvidas frequentes</Link></nav><Button variant="outline" asChild className="management-link"><Link to="/gestao"><span>Área de gestão</span><ArrowUpRight/></Link></Button><Button size="icon" variant="ghost" className="mobile-menu" aria-label="Abrir menu" onClick={()=>setOpen(!open)}><Menu/></Button></div>{path==='/gestao'&&<div className="management-strip">ChefBox · Gestão e cozinha parceira</div>}</header>}
+import { Link, useLocation } from "@tanstack/react-router";
+import { ChefHat, ArrowUpRight, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+export function Brand() {
+  return (
+    <Link to="/" className="brand">
+      <span className="brand-icon">
+        <ChefHat size={25} />
+      </span>
+      <span>
+        Chef<span className="text-primary">Box</span>
+        <span className="brand-dot">.</span>
+      </span>
+    </Link>
+  );
+}
+export function Header() {
+  const [open, setOpen] = useState(false);
+  const path = useLocation().pathname;
+  return (
+    <header className="site-header">
+      <div className="container header-inner">
+        <Brand />
+        <nav className={open ? "main-nav nav-open" : "main-nav"}>
+          <Link to="/" hash="como-funciona">
+            Como funciona
+          </Link>
+          <Link to="/" hash="cardapio">
+            Cardápio semanal
+          </Link>
+          <Link to="/" hash="planos">
+            Planos
+          </Link>
+          <Link to="/" hash="duvidas">
+            Dúvidas frequentes
+          </Link>
+        </nav>
+        <Button variant="outline" asChild className="management-link">
+          <Link to="/gestao">
+            <span>Área de gestão</span>
+            <ArrowUpRight />
+          </Link>
+        </Button>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="mobile-menu"
+          aria-label="Abrir menu"
+          onClick={() => setOpen(!open)}
+        >
+          <Menu />
+        </Button>
+      </div>
+      {path === "/gestao" && (
+        <div className="management-strip">ChefBox · Gestão e cozinha parceira</div>
+      )}
+    </header>
+  );
+}

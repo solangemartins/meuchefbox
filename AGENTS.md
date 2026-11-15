@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## ChefBox architecture
+- Keep public checkout and role-protected management operations in validated server functions; client selectors are presentation only and never grant privileges.
+- Keep demo data in memory separately from real Cloud data so public demonstrations cannot expose or alter customer records.
+- Keep pricing and order transitions in the shared domain module and test them so checkout and production use the same rules.
+- Keep notification logs simulated until an approved sending connection and sender domain are configured; never store provider secrets in client forms.
