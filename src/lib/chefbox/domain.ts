@@ -86,17 +86,20 @@ export function noticesFor(o: Order, cook?: Cook): Omit<Notice, "id" | "enviado_
       : [
           o.cliente_email,
           o.cliente_telefone,
-          ...(o.status === "aprovado" && cook ? [cook.email] : []),
+          ...(cook ? [cook.email, cook.telefone] : []),
           ...(o.status === "pronto_retirada" || o.status === "saiu_entrega"
             ? ["Administradora"]
             : []),
         ];
   return recipients.map((r, i) => ({
     pedido_id: o.id,
-    tipo: i === 1 ? "whatsapp" : "email",
+    tipo: i === 1 || r === cook?.telefone ? "whatsapp" : "email",
     destinatario: r,
     assunto: labels[o.status] ?? o.status,
-    conteudo: r === cook?.email ? "Novo pedido liberado para sua cozinha!" : text,
+    conteudo:
+      (r === cook?.email || r === cook?.telefone) && o.status === "aprovado"
+        ? "Novo pedido liberado para sua cozinha!"
+        : text,
     status: "simulado",
   }));
 }

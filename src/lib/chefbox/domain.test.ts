@@ -36,4 +36,21 @@ describe("ChefBox rules", () => {
     expect(price("caseira", 5)).toBe(109.5);
     expect(price("fit", 10)).toBe(259);
   });
+  it.each(["aprovado", "em_preparo", "saiu_entrega", "pronto_retirada", "concluido"])(
+    "logs simulated client and cook notifications for %s",
+    (status) => {
+      const cook = demoCooks[0];
+      const logs = noticesFor({ ...first, status }, cook);
+      expect(logs.map((n) => n.destinatario)).toEqual(
+        expect.arrayContaining([
+          first.cliente_email,
+          first.cliente_telefone,
+          cook.email,
+          cook.telefone,
+        ]),
+      );
+      expect(logs.every((n) => n.status === "simulado")).toBe(true);
+      expect(logs.find((n) => n.destinatario === cook.telefone)?.tipo).toBe("whatsapp");
+    },
+  );
 });

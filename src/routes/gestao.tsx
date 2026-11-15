@@ -585,10 +585,21 @@ function CheckDone() {
   return <span className="text-primary text-xs">Concluído</span>;
 }
 function SettingsForm({ demo }: { demo: boolean }) {
-  const [settings, setSettings] = useState({ whatsapp: "", retirada: "", admin_email: "" }),
+  const [settings, setSettings] = useState({
+      whatsapp: "5511971420446",
+      retirada: "",
+      admin_email: "",
+    }),
     [loading, setLoading] = useState(false);
   useEffect(() => {
-    if (!demo)
+    if (demo) {
+      supabase
+        .rpc("get_public_chefbox_settings")
+        .single()
+        .then(({ data }) => {
+          if (data) setSettings({ ...data, admin_email: "" });
+        });
+    } else
       supabase
         .from("chefbox_settings")
         .select("*")
@@ -603,7 +614,10 @@ function SettingsForm({ demo }: { demo: boolean }) {
     setLoading(true);
     try {
       if (!demo) {
-        const { error } = await supabase.from("chefbox_settings").update(settings).eq("id", 1);
+        const { error } = await supabase
+          .from("chefbox_settings")
+          .update({ ...settings, whatsapp: settings.whatsapp.replace(/\D/g, "") })
+          .eq("id", 1);
         if (error) throw error;
       }
       toast.success(demo ? "Configuração de demonstração atualizada." : "Configurações salvas.");
@@ -621,8 +635,9 @@ function SettingsForm({ demo }: { demo: boolean }) {
         <input
           value={settings.whatsapp}
           onChange={(e) => setSettings({ ...settings, whatsapp: e.target.value })}
-          placeholder="Número oficial do ChefBox"
-          pattern="[0-9]{10,15}"
+          placeholder="55 11971420446"
+          type="tel"
+          pattern="[+0-9 ()-]{10,22}"
         />
       </label>
       <label className="field">
@@ -645,25 +660,24 @@ function SettingsForm({ demo }: { demo: boolean }) {
       </Button>
       <h3>
         <Mail size={18} className="inline mr-2" />
-        E-mails com Resend
+        Log de Notificações
       </h3>
-      <span className="status-badge">Não conectado · notificações simuladas</span>
+      <span className="status-badge">Modo de simulação visual · sem envio real</span>
       <p>
-        A chave do Resend é protegida e deve ser cadastrada pela conexão segura do projeto, nunca
-        neste formulário. Os avisos ficam registrados na central enquanto o envio real não está
-        ativado.
+        Os avisos para clientes e cozinheiras ficam registrados na central de notificações a cada
+        mudança de status. Nenhum e-mail ou WhatsApp automático é enviado.
       </p>
       <Button
         type="button"
         variant="outline"
         onClick={() =>
           toast.info(
-            "Conecte o Resend e verifique seu domínio para enviar um e-mail real de teste.",
+            "Modo de simulação ativo. Altere o status de um pedido para visualizar os avisos na central de notificações.",
           )
         }
       >
         <Mail />
-        Enviar e-mail de teste
+        Conferir modo de simulação
       </Button>
     </form>
   );
