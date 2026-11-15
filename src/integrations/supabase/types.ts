@@ -218,6 +218,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_chefbox_settings: {
+        Args: never
+        Returns: {
+          retirada: string
+          whatsapp: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

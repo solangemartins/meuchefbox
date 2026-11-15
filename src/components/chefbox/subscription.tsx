@@ -40,9 +40,7 @@ export function Subscription() {
     queryKey: ["settings"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("chefbox_settings")
-        .select("*")
-        .eq("id", 1)
+        .rpc("get_public_chefbox_settings")
         .single();
       if (error) throw error;
       return data;

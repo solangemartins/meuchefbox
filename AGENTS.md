@@ -34,3 +34,4 @@ use the editor.
 - Keep demo data in memory separately from real Cloud data so public demonstrations cannot expose or alter customer records.
 - Keep pricing and order transitions in the shared domain module and test them so checkout and production use the same rules.
 - Keep notification logs simulated until an approved sending connection and sender domain are configured; never store provider secrets in client forms.
+- Read customer-facing settings through the fixed public settings lookup; full settings rows are administrator-only so the administrator email never reaches public checkout.
